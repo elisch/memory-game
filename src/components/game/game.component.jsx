@@ -4,46 +4,6 @@ import './game.styles.scss';
 
 import Card from '../card/card.component';
 
-const CARDS = [
-  {
-    id: 1,
-    value: 1,
-    isClicked: false,
-    isMatched: false,
-
-  },
-  {
-    id: 2,
-    value: 1,
-    isClicked: false,
-    isMatched: false,
-  },
-  {
-    id: 3,
-    value: 2,
-    isClicked: false,
-    isMatched: false,
-  },
-  {
-    id: 4,
-    value: 2,
-    isClicked: false,
-    isMatched: false,
-  },
-  {
-    id: 5,
-    value: 3,
-    isClicked: false,
-    isMatched: false,
-  },
-  {
-    id: 6,
-    value: 3,
-    isClicked: false,
-    isMatched: false,
-  },
-];
-
 class Game extends React.Component {
   constructor() {
     super();
@@ -54,7 +14,28 @@ class Game extends React.Component {
   }
 
   componentDidMount () {
-    const cards = CARDS.sort(() => 0.5 - Math.random());
+    this.generateCards(5);
+  }
+
+  generateCards = (pairs) => {
+    const cards = [];
+    let id = 1;
+    let value = 1;
+
+    for(let i = 0; i < pairs; i += 1) {
+      for(let x = 0; x < 2; x += 1) {
+        cards.push({
+          id,
+          value,
+          isClicked: false,
+          isMatched: false,
+        });
+        id = id += 1;
+      }
+      value = value += 1;
+    }
+
+    cards.sort(() => 0.5 - Math.random());
     this.setState({ cards });
   }
 
