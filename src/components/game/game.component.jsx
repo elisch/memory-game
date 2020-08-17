@@ -3,6 +3,7 @@ import React from 'react';
 import './game.styles.scss';
 
 import Card from '../card/card.component';
+import Input from '../input/input.component';
 
 class Game extends React.Component {
   constructor() {
@@ -10,11 +11,13 @@ class Game extends React.Component {
     this.state = {
       cards: [],
       clickedCards: [],
+      numberOfCards: 0,
+      showGame: false,
     }
   }
 
-  componentDidMount () {
-    this.generateCards(5);
+  setNumberOfCards = numberOfCards => {
+    this.setState({ numberOfCards, showGame: true }, () => this.generateCards(this.state.numberOfCards));
   }
 
   generateCards = (pairs) => {
@@ -87,9 +90,13 @@ class Game extends React.Component {
     return(
       <div>
         <h1>Memory Game</h1>
+        {this.state.showGame ?
         <div className='cards'>
-          {cards}
+        {cards}
         </div>
+        :
+        <Input setNumberOfCards={this.setNumberOfCards} />
+        }
       </div>
     );
   }
