@@ -7,27 +7,40 @@ import Card from '../card/card.component';
 const CARDS = [
   {
     id: 1,
-    value: 1
+    value: 1,
+    isClicked: false,
+    isMatched: false,
+
   },
   {
     id: 2,
-    value: 1
+    value: 1,
+    isClicked: false,
+    isMatched: false,
   },
   {
     id: 3,
-    value: 2
+    value: 2,
+    isClicked: false,
+    isMatched: false,
   },
   {
     id: 4,
-    value: 2
+    value: 2,
+    isClicked: false,
+    isMatched: false,
   },
   {
     id: 5,
     value: 3,
+    isClicked: false,
+    isMatched: false,
   },
   {
     id: 6,
-    value: 3
+    value: 3,
+    isClicked: false,
+    isMatched: false,
   },
 ];
 
@@ -36,6 +49,7 @@ class Game extends React.Component {
     super();
     this.state = {
       cards: [],
+      clickedCards: [],
     }
   }
 
@@ -45,11 +59,42 @@ class Game extends React.Component {
   }
 
   renderCards = () => {
-    const { cards } = this.state;
+    const { cards, clickedCards } = this.state;
   
-    return cards.map(card => (
-      <Card key={card.id} card={card} />
-    ));
+    return cards.map(card => {
+      const isClicked = clickedCards.some(clickedCard => clickedCard.id === card.id);
+
+      return (
+        <Card 
+          key={card.id} 
+          card={{...card, isClicked }}
+          onClick={this.handleCardClick}
+        />
+      )
+    })
+  }
+
+  handleCardClick = clickedCard => {
+    const cards = this.state.cards;
+    let clickedCards = this.state.clickedCards;
+
+    clickedCards.push(clickedCard);
+
+    if(clickedCards.length === 2) {
+      // check if match
+      if(clickedCards[0].value === clickedCards[1].value) {
+        const filteredCards = cards.map(card => clickedCard.value === card.value ? {...card, isMatched: true} : card );
+        
+        this.setState({ cards: filteredCards, clickedCards: [] });
+        return;
+      } else {
+        clickedCards = [];
+      }
+    } else if(clickedCards.length > 2) {
+      clickedCards = clickedCards.filter(card => clickedCard.id !== card.id)
+    }
+
+    this.setState({ clickedCards });
   }
 
   render() {
