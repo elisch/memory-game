@@ -75,9 +75,8 @@ class Game extends React.Component {
   }
 
   handleCardClick = clickedCard => {
-    const cards = this.state.cards;
+    let cards = this.state.cards;
     let clickedCards = this.state.clickedCards;
-
     clickedCards.push(clickedCard);
 
     if(clickedCards.length === 2) {
@@ -85,16 +84,20 @@ class Game extends React.Component {
       if(clickedCards[0].value === clickedCards[1].value) {
         const filteredCards = cards.map(card => clickedCard.value === card.value ? {...card, isMatched: true} : card );
         
-        this.setState({ cards: filteredCards, clickedCards: [] });
-        return;
-      } else {
+        cards = filteredCards;
         clickedCards = [];
+      } else {
+        this.setState({ clickedCards });
+        setTimeout(() => { this.setState({ clickedCards: [] }) }, 500);
+        return;
       }
-    } else if(clickedCards.length > 2) {
+    }
+
+    if(clickedCards.length > 2) {
       clickedCards = clickedCards.filter(card => clickedCard.id !== card.id)
     }
 
-    this.setState({ clickedCards });
+    this.setState({ clickedCards, cards });
   }
 
   render() {
