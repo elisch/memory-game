@@ -6,7 +6,7 @@ class Input extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputValue: '',
+      inputValue: 0,
     }
   }
 
@@ -16,8 +16,15 @@ class Input extends React.Component {
   }
 
   handleSubmit = event => {
+    const { inputValue } = this.state;
+
     event.preventDefault();
-    this.props.setNumberOfCards(this.state.inputValue);
+
+    if(inputValue >= 2 && inputValue <= 50) {
+      this.props.startGame(parseInt(inputValue));
+    } else {
+      alert('Invalid input');
+    }
   }
 
   render() {
@@ -26,9 +33,10 @@ class Input extends React.Component {
     return(
       <div className='pair-input'>
         <h2>Number of pairs?</h2>
+        <p>Choose a number between 2 and 50</p>
         <form onSubmit={this.handleSubmit} className='form'>
           <input className='input' type='number' value={inputValue} onChange={this.handleChange}/>
-          <button type='submit' className='button'>submit</button>
+          <button type='submit' className='button'>START GAME</button>
         </form>
       </div>
     )

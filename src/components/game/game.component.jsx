@@ -4,6 +4,7 @@ import './game.styles.scss';
 
 import Card from '../card/card.component';
 import Input from '../input/input.component';
+import Stats from '../stats/stats.component';
 
 class Game extends React.Component {
   constructor() {
@@ -11,13 +12,32 @@ class Game extends React.Component {
     this.state = {
       cards: [],
       clickedCards: [],
-      numberOfCards: 0,
+      numberOfPairs: 0,
+      matchedPairs: 0,
       showGame: false,
+      seconds: 0,
     }
+    this.timer = 0;
   }
 
-  setNumberOfCards = numberOfCards => {
-    this.setState({ numberOfCards, showGame: true }, () => this.generateCards(this.state.numberOfCards));
+  startTimer = () => {
+    this.timer = setInterval(() => {
+      this.setState(prevState => {
+        return { seconds: prevState.seconds + 1 };
+      });
+    }, 1000);
+  }
+
+  stopTimer = () => {
+    clearInterval(this.timer);
+  }
+
+  startGame = numberOfPairs => {
+    this.setState({ numberOfPairs, showGame: true }, 
+      () => {
+        this.generateCards(numberOfPairs);
+        this.startTimer();
+      });
   }
 
   generateCards = (pairs) => {
@@ -67,9 +87,18 @@ class Game extends React.Component {
       // check if match
       if(clickedCards[0].value === clickedCards[1].value) {
         const filteredCards = cards.map(card => clickedCard.value === card.value ? {...card, isMatched: true} : card );
-        
         cards = filteredCards;
         clickedCards = [];
+
+        this.setState(prevState => {
+          return { matchedPairs: prevState.matchedPairs + 1}
+        }, () => {
+          const { matchedPairs, numberOfPairs } = this.state;
+          if(matchedPairs === numberOfPairs) {
+            alert(`WOHOHO! :D You made it in ${this.state.seconds} seconds.`)
+            this.stopTimer();
+          }
+        });
       } else {
         this.setState({ clickedCards });
         setTimeout(() => { this.setState({ clickedCards: [] }) }, 500);
@@ -85,17 +114,19 @@ class Game extends React.Component {
   }
 
   render() {
+    const { seconds, showGame, numberOfPairs, matchedPairs } = this.state;
     const cards = this.renderCards();
 
     return(
       <div>
+        <Stats seconds={seconds} numberOfPairs={numberOfPairs} matchedPairs={matchedPairs} />
         <h1>Memory Game</h1>
-        {this.state.showGame ?
+        {showGame ?
         <div className='cards'>
-        {cards}
+          {cards}
         </div>
         :
-        <Input setNumberOfCards={this.setNumberOfCards} />
+        <Input startGame={this.startGame} />
         }
       </div>
     );
