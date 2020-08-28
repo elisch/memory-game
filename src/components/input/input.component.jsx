@@ -33,7 +33,7 @@ class Input extends React.Component {
     return(
       <div className='pair-input'>
         <h2>Number of pairs?</h2>
-        <p>Choose a number between 2 and 50</p>
+        <span>Choose a number between 2 and 10</span>
         <form onSubmit={this.handleSubmit} className='form'>
           <input className='input' type='number' value={inputValue} onChange={this.handleChange}/>
           <button type='submit' className='button'>START GAME</button>

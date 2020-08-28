@@ -40,6 +40,13 @@ class Game extends React.Component {
       });
   }
 
+  endGame = () => {
+    this.stopTimer();
+    setTimeout(() => {
+      alert(`WOHOHO! :D You made it in ${this.state.seconds} seconds.`);
+    }, 500);
+  }
+
   generateCards = (pairs) => {
     const cards = [];
     let id = 1;
@@ -86,31 +93,30 @@ class Game extends React.Component {
     if(clickedCards.length === 2) {
       // check if match
       if(clickedCards[0].value === clickedCards[1].value) {
-        const filteredCards = cards.map(card => clickedCard.value === card.value ? {...card, isMatched: true} : card );
-        cards = filteredCards;
+        cards = cards.map(card => clickedCard.value === card.value ? {...card, isMatched: true} : card );
         clickedCards = [];
 
         this.setState(prevState => {
-          return { matchedPairs: prevState.matchedPairs + 1}
+          return { cards, matchedPairs: prevState.matchedPairs + 1}
         }, () => {
           const { matchedPairs, numberOfPairs } = this.state;
           if(matchedPairs === numberOfPairs) {
-            alert(`WOHOHO! :D You made it in ${this.state.seconds} seconds.`)
-            this.stopTimer();
+            this.endGame();
           }
         });
       } else {
         this.setState({ clickedCards });
         setTimeout(() => { this.setState({ clickedCards: [] }) }, 500);
-        return;
       }
+    } else {
+      
     }
 
     if(clickedCards.length > 2) {
       clickedCards = clickedCards.filter(card => clickedCard.id !== card.id)
     }
 
-    this.setState({ clickedCards, cards });
+    this.setState({ clickedCards });
   }
 
   render() {
@@ -120,7 +126,6 @@ class Game extends React.Component {
     return(
       <div>
         <Stats seconds={seconds} numberOfPairs={numberOfPairs} matchedPairs={matchedPairs} />
-        <h1>Memory Game</h1>
         {showGame ?
         <div className='cards'>
           {cards}
